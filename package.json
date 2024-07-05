@@ -39,7 +39,9 @@
 	"pkg": {
 		"scripts": "dist/**/*.js",
 		"assets": [
-			"assets/**/*"
+			"assets/resources/**/*",
+			"node_modules/axios/**/*",
+			".env"
 		],
 		"targets": [
 			"latest-linux-x64",

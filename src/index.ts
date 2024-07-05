@@ -4,9 +4,14 @@ import debug from "debug";
 import path from "path";
 import { downloadFile, extractZipFile } from "./utils/file-utils";
 import { KuboDownloadHelper } from "./utils/ipfs-kubo-utils";
-import { startProccess } from "./utils/commands-utils";
+import fs from "fs";
+import os from "os";
 
-dotenv.config();
+const dotenvAbsolutePath = path.join(__dirname, '../.env');
+
+dotenv.config({
+    path: dotenvAbsolutePath
+});
 
 debug.enable("hello:index, hello:app");
 class App {
@@ -38,13 +43,23 @@ class App {
 
             this.log("Downloading file: " + fileName);
 
-            const downloadPath = path.join(__dirname, "../assets/kubo", fileName);
-            await downloadFile(downloadLink, downloadPath, this.log);
+            // create "kubo" directory if it doesn't exist
+            const kuboDir = path.join(os.homedir(), "hello-ipfs-user-node/assets/kubo");
+            if (!fs.existsSync(kuboDir)) {
+                fs.mkdirSync(kuboDir, { recursive: true });
+            }
 
-            await extractZipFile(downloadPath, this.log, {
-                deleteZipAfterExtract: false,
-                overwrite: true
-            });
+            const downloadPath = path.join(os.homedir(), "hello-ipfs-user-node/assets/kubo", fileName);
+            try {
+                await downloadFile(downloadLink, downloadPath, this.log);
+                await extractZipFile(downloadPath, this.log, {
+                    deleteZipAfterExtract: false,
+                    overwrite: true
+                });
+            } catch (error) {
+                this.log("Error:", error);
+            }
+
 
             this.log(`Downloaded ${fileName}`);
 
