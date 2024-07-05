@@ -11,7 +11,6 @@ export class Server {
         this.app = express();
         this.configureMiddleware();
         this.configureRoutes();
-        debug.enable("*");
     }
 
     private configureMiddleware(): void {

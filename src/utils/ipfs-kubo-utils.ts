@@ -36,7 +36,7 @@ export class KuboDownloadHelper {
     }
 
     // Function to generate the download link for Kubo based on version
-    static getDownloadLink(version: string): string {
+    static getDownloadLink(version: string): [string, string] {
         const baseUrl = "https://dist.ipfs.tech/";
         const operatingSystem = KuboDownloadHelper.getOperatingSystem();
         const architecture = KuboDownloadHelper.getArchitecture();
@@ -69,7 +69,8 @@ export class KuboDownloadHelper {
 
         // Full download link
         const downloadLink = `${baseUrl}kubo/v${version}/${fileNameBase}${archSuffix}.${extension}`;
+        const fileName = `${fileNameBase}${archSuffix}.${extension}`
 
-        return downloadLink;
+        return [downloadLink, fileName];
     }
 }

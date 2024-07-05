@@ -15,9 +15,13 @@
 	"author": "hello.app",
 	"license": "MIT",
 	"dependencies": {
+		"@types/adm-zip": "^0.5.5",
+		"@types/axios": "^0.14.0",
 		"@types/debug": "^4.1.12",
 		"@types/express": "^4.17.21",
 		"@types/morgan": "^1.9.9",
+		"adm-zip": "^0.5.14",
+		"axios": "^1.7.2",
 		"debug": "^4.3.5",
 		"dotenv": "^16.4.5",
 		"express": "^4.19.2",
