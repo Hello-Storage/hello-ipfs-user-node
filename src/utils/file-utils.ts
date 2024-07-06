@@ -6,7 +6,7 @@ import debug from 'debug';
 
 export async function downloadFile(url: string, destPath: string, log: debug.IDebugger): Promise<boolean> {
     if (fs.existsSync(destPath)) {
-        console.log(`The file ${destPath} already exists. No download will be performed.`);
+        log(`The file ${destPath} already exists. No download will be performed.`);
         return true;
     }
 
