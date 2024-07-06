@@ -73,4 +73,5 @@ export class KuboDownloadHelper {
 
         return [downloadLink, fileName];
     }
+
 }

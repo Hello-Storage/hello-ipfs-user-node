@@ -6,7 +6,8 @@ import { downloadFile, extractZipFile } from "./utils/file-utils";
 import { KuboDownloadHelper } from "./utils/ipfs-kubo-utils";
 import fs from "fs";
 import os from "os";
-import { ChildProcessExecutor } from "./utils/commands-utils";
+import { getGlobalConfig } from "./globals";
+import { IpfsCommandUtils } from "./utils/ipfs/ipfs-command-utils";
 
 const dotenvAbsolutePath = path.join(__dirname, '../.env');
 
@@ -14,7 +15,7 @@ dotenv.config({
     path: dotenvAbsolutePath
 });
 
-debug.enable("*");
+debug.enable("*, -follow-redirects");
 
 class App {
     private PORT: number;
@@ -46,13 +47,13 @@ class App {
             this.log("Downloading file: " + fileName);
 
             // create "kubo" directory if it doesn't exist
-            const kuboDir = path.join(os.homedir(), "hello-ipfs-user-node/assets/kubo");
+            const kuboDir = path.join(os.homedir(), getGlobalConfig("kubo_location"));
             if (!fs.existsSync(kuboDir)) {
                 fs.mkdirSync(kuboDir, { recursive: true });
             }
 
             // download and extract the file on the home directory so we can use ipfs (kubo)
-            const downloadPath = path.join(os.homedir(), "hello-ipfs-user-node/assets/kubo", fileName);
+            const downloadPath = path.join(kuboDir, fileName);
             try {
                 await downloadFile(downloadLink, downloadPath, this.log);
                 await extractZipFile(downloadPath, this.log, {
@@ -65,8 +66,9 @@ class App {
 
             this.log(`Downloaded ${fileName}`);
 
-            const childExecutor = new ChildProcessExecutor()
-            await childExecutor.startProcess("echo hello there, im just testing if this works");
+            const ipfsVersion = await IpfsCommandUtils.getIpfsVersion();
+
+            console.log(ipfsVersion);
 
             // start the server so we can use ipfs locally and comunicate with the browser hello.app page
             this.server.start(this.PORT);
