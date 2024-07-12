@@ -39,14 +39,14 @@ jobs:
             - name: Extract version from package.json
               id: extract_version
               run: |
-                  echo ::set-output name=VERSION  $(jq -r '.version' package.json)
+                  echo "PKG_VERSION=$(jq -r '.version' package.json)" >> $GITHUB_ENV
             - name: verify version
               run: |
-                  echo ${{ steps.extract_version.outputs.VERSION }}
+                  echo $PKG_VERSION
             - name: Extract release body from package.json
               id: extract_release_body
               run: |
-                  echo ::set-output name=RELEASE_BODY  $(jq -r '.releaseBody' package.json)
+                  echo "RELEASE_BODY=$(jq -r '.releaseBody' package.json)" >> $GITHUB_ENV
 
             - name: Create Draft Release
               id: create_release
@@ -56,7 +56,7 @@ jobs:
               with:
                   tag_name: ${{ steps.extract_version.outputs.VERSION }}
                   release_name: Release ${{ steps.extract_version.outputs.VERSION }}
-                  body: ${{ steps.extract_release_body.outputs.RELEASE_BODY }}
+                  body: $RELEASE_BODY
                   draft: true
                   prerelease: false
 
