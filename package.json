@@ -8,7 +8,7 @@
 		"build": "tsc",
 		"start": "node dist/index.js",
 		"dev": "ts-node src/index.ts",
-		"pkg": "pkg .",
+		"pkg": "pkg . --compress GZip",
 		"lint": "eslint ."
 	},
 	"keywords": [],
@@ -50,5 +50,6 @@
 			"latest-win-x64"
 		],
 		"outputPath": "bin"
-	}
+	},
+	"releaseBody": "First release"
 }

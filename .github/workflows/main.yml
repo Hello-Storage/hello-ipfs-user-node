@@ -1,0 +1,81 @@
+name: "Create Releases and Upload Assets"
+
+on:
+    push:
+        branches:
+            - main
+
+jobs:
+    publish-package:
+        permissions:
+            contents: write
+        strategy:
+            fail-fast: false
+            matrix:
+              include:
+                - asset_path: ./bin/ipfs-node-linux
+                  asset_name: ipfs-node-linux
+                  asset_content_type: application/octet-stream
+                
+                - asset_path: ./bin/ipfs-node-macos
+                  asset_name: ipfs-node-macos
+                  asset_content_type: application/octet-stream
+
+                - asset_path: ./bin/ipfs-node-windows.exe
+                  asset_name: ipfs-node-windows.exe
+                  asset_content_type: application/octet-stream
+
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: pnpm/action-setup@v4
+              name: Install pnpm
+              with:
+                  version: 8
+                  run_install: false
+
+            - name: Install Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: "pnpm"
+
+            - name: install frontend dependencies
+              run: pnpm install
+
+            - name: build frontend
+              run: pnpm run pkg
+
+            - name: Extract version from package.json
+              id: extract_version
+              run: |
+                  echo ::set-output name=VERSION  $(jq -r '.version' package.json)
+            - name: Extract release body from package.json
+              id: extract_release_body
+              run: |
+                  echo ::set-output name=RELEASE_BODY  $(jq -r '.releaseBody' package.json)
+                  
+
+            - name: Create Draft Release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ steps.extract_version.outputs.VERSION }}
+                  release_name: Release ${{ steps.extract_version.outputs.VERSION }}
+                  body: ${{ steps.extract_release_body.outputs.RELEASE_BODY }}
+                  draft: true
+                  prerelease: false
+
+            - name: Upload Release Asset
+              id: upload-release-asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ${{ matrix.asset_path }}
+                  asset_name: ${{ matrix.asset_name }}
+                  asset_content_type: ${{ matrix.asset_content_type }}
