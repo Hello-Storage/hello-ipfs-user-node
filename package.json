@@ -1,6 +1,6 @@
 {
 	"name": "ipfs-user-node",
-	"version": "1.0.0",
+	"version": "0.0.1",
 	"description": "An console implementation of IPFS user node to manage files and Hello.app services",
 	"main": "dist/index.js",
 	"bin": "dist/index.js",
