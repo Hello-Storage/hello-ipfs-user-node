@@ -32,7 +32,9 @@ jobs:
               run: pnpm install
 
             - name: build frontend
-              run: pnpm run pkg
+              run: |
+                pnpm run build
+                pnpm run pkg
 
             - name: Extract version from package.json
               id: extract_version
