@@ -143,7 +143,10 @@ dist
 
 # End of https://www.toptal.com/developers/gitignore/api/node
 
-bin
+bin/ipfs-user-node-linux
+bin/ipfs-user-node-macos
+bin/ipfs-user-node-win.exe
+
 
 assets/kubo/kubo
 assets/kubo/*.zip
