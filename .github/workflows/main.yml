@@ -38,9 +38,11 @@ jobs:
 
             - name: Extract version from package.json
               id: extract_version
-              run: | 
-                  echo $(jq -r '.version' package.json)
+              run: |
                   echo ::set-output name=VERSION  $(jq -r '.version' package.json)
+            - name: verify version
+              run: |
+                  echo ${{ steps.extract_version.outputs.VERSION }}
             - name: Extract release body from package.json
               id: extract_release_body
               run: |
