@@ -35,6 +35,13 @@ jobs:
               run: |
                   pnpm run build
                   pnpm run pkg
+            
+            - name: Create Env File
+              run: |
+                echo "PORT=${{ secrets.PORT }}" >> .env
+                echo "KUBO_VERSION=${{ secrets.KUBO_VERSION }}" >> .env
+                
+
 
             - name: Extract version from package.json
               id: extract_version
